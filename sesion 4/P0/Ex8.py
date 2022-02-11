@@ -6,5 +6,6 @@ while not exit:
         exit = True
     else:
         full_seq = seq0.seq_read_fasta(filename)
-        count_a, count_c, count_g, count_t = seq0.seq_count_base(full_seq)
-        print(count_a, count_c, count_g, count_t)
+        d = seq0.seq_count(full_seq)
+        base = seq0.processing_genes(d)
+        print(base)
