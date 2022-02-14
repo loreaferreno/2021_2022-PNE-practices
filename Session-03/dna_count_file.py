@@ -4,7 +4,7 @@ def count_bases(seq):
         d[b] += 1
     return d
 
-with open("sequences.txt", "r") as f:
+with open("dna.txt", "r") as f:
     sequences = f.readlines()
     for seq in sequences:
         new_seq = seq.replace("\n", "")
