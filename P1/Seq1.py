@@ -53,7 +53,7 @@ class Seq:
             return 0
 
 
-    def count(self):
+    def count_base(self):
         count_a = 0
         count_c = 0
         count_g = 0
@@ -68,5 +68,14 @@ class Seq:
             elif i == "T":
                 count_t += 1
         return count_a, count_c, count_g, count_t
+
+    def count(self):
+        d = {"A": 0, "C": 0, "G": 0, "T": 0}
+        for b in self.strbases:
+            try:
+                d[b] += 1
+            except BaseException:
+                return d
+        return d
 
 
