@@ -8,6 +8,7 @@ class Seq:
         self.strbases = strbases
         if strbases == "NULL":
             print("NULL seq created")
+            exit = False
         else:
             if not self.valid_sequence():
                 self.strbases = "ERROR"
@@ -77,5 +78,53 @@ class Seq:
             except BaseException:
                 return d
         return d
+
+    def reverse(self):
+        if self.valid_sequence():
+            fragment = self.strbases
+            reverse = fragment[::-1]
+            return reverse
+        else:
+            return self.strbases
+
+    def complement(self):
+        if self.valid_sequence():
+            frag = self.strbases
+            complementary = ""
+            for i in frag:
+                if i == "A":
+                    complementary += "T"
+                elif i == "T":
+                    complementary += "A"
+                elif i == "C":
+                    complementary += "G"
+                elif i == "G":
+                    complementary += "C"
+            return complementary
+        else:
+            return self.strbases
+
+    def get_file(self):
+        exit = False
+        while not exit:
+            folder = "./sequences/"
+            self.filename = input("Enter the name of the file: ")
+            try:
+                filename = open(folder + self.filename + ".txt", "r")
+                exit = True
+                return filename
+            except FileNotFoundError:
+                if self.filename.lower() == "exit":
+                    print("The program is finished. You pressed exit.")
+                    filename = "none"
+                    exit = True
+                    return filename
+                else:
+                    print("File was not found")
+
+    def read_fasta(self, filename):
+        full_seq = filename.read()
+        full_seq = full_seq[full_seq.find("\n"):].replace("\n", "")
+        return full_seq
 
 
