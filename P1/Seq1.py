@@ -123,8 +123,19 @@ class Seq:
                     print("File was not found")
 
     def read_fasta(self, filename):
-        full_seq = filename.read()
-        full_seq = full_seq[full_seq.find("\n"):].replace("\n", "")
-        return full_seq
+        from pathlib import Path
+        file_contents = Path(filename).read_text()
+        lines = file_contents.splitlines()
+        body = lines[1:]
+        self.strbases = ""
+        for line in body:
+            self.strbases += line
 
+    def processing_genes(self, d):
+        highest_value = 0
+        for k, v in d.items():
+            if int(v) > highest_value:
+                highest_value = int(v)
+                base = k
+        return base
 
