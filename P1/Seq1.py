@@ -122,7 +122,7 @@ class Seq:
                 else:
                     print("File was not found")
 
-    def read_fasta(self, filename):
+    def read_fasta2(self, filename):
         from pathlib import Path
         file_contents = Path(filename).read_text()
         lines = file_contents.splitlines()
