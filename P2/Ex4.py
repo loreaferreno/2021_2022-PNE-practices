@@ -3,7 +3,7 @@ from Seq1 import Seq
 import colorama
 
 PRACTICE = 2
-EXERCISE = 2
+EXERCISE = 4
 
 print(f"-----| Practice {PRACTICE}, Exercise {EXERCISE} |------")
 
@@ -26,7 +26,7 @@ for r in sequences:
     s = Seq()
     s.read_fasta2(r)
     print(f"Sending {colorama.Fore.BLUE + r } to the server..." + colorama.Fore.RESET)
-    response = c.talk(s.strbases)
+    response = c.talk(f"Sending {r} gene to server" + colorama.Fore.RESET)
     print(f"Response: {colorama.Fore.YELLOW + response + colorama.Fore.RESET}")
 
     print(f"Sending {colorama.Fore.BLUE + str(s) } to the server..." + colorama.Fore.RESET)
