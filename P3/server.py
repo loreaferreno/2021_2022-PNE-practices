@@ -1,5 +1,6 @@
 import socket
 from colorama import init, Fore
+from Seq1 import Seq
 
 # -- Step 1: create the socket
 ls = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -65,26 +66,63 @@ while True:
         # -- Print the received message
 
         if cmd != "PING":
-            arg = splitted_command[1]
-            print(Fore.LIGHTGREEN_EX + cmd)
+            try:
+                arg = splitted_command[1]
+                print(Fore.LIGHTGREEN_EX + cmd)
+            except IndexError:
+                arg = False
 
         if cmd == "PING":
             response = "OK\n"
+            cs.send(response.encode())
         elif cmd == "GET":
-            response = sequences[int(arg)]
-            print(sequences[int(arg)])
+            if arg == True:
+                response = sequences[int(arg)]
+                cs.send(response.encode())
+                print(sequences[int(arg)])
+            elif arg == False:
+                for s in sequences:
+                    response = s
+                    cs.send(response.encode())
         elif cmd == "INFO":
             print("Sequence:", arg)
             print("The length:", len(arg))
-            response = arg
+            s = Seq(arg)
+            d = s.count()
+            for k, v in d.items():
+                print(k + ":", str(v), str(round((v / len(arg)) * 100, 2)) + "%\n", end=" ")
+            response = f"The sequence: {arg}"
+            response2 = f"\nThe lenght of the sequence: {str(len(arg))}"
+            # -- The message has to be encoded into bytes
+            cs.send(response.encode())
+            for k, v in d.items():
+                    response3 = f"\n{k} : {str(v)} ({round((v / len(arg)) * 100, 2)})%"
+                    cs.send(response3.encode())
+        elif cmd == "COMP":
+            s = Seq(arg)
+            complementary = s.complement()
+            print(complementary)
+            response4 = complementary
+            cs.send(response4.encode())
+        elif cmd == "REV":
+            s = Seq(arg)
+            reverse = s.reverse()
+            print(reverse)
+            response5 = reverse
+            cs.send(response5.encode())
+        elif cmd == "GENE":
+            s = Seq()
+            s.read_fasta2(arg)
+            print(s)
+            response = str(s)
+            cs.send(response.encode())
 
 
         else:
             # -- Send a response message to the client
             response = "This comand is not available in the server\n"
 
-        # -- The message has to be encoded into bytes
-        cs.send(response.encode())
+
 
         # -- Close the data socket
         cs.close()

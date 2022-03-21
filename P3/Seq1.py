@@ -79,10 +79,6 @@ class Seq:
                 return d
         return d
 
-
-
-
-
     def reverse(self):
         if self.valid_sequence():
             fragment = self.strbases
@@ -128,7 +124,7 @@ class Seq:
 
     def read_fasta2(self, filename):
         from pathlib import Path
-        file_contents = Path(filename).read_text()
+        file_contents = Path(filename + ".txt").read_text()
         lines = file_contents.splitlines()
         body = lines[1:]
         self.strbases = ""
@@ -142,4 +138,10 @@ class Seq:
                 highest_value = int(v)
                 base = k
         return base
+
+    def percentages(self, d):
+        new_dict = {"A": 0, "C": 0, "G": 0, "T": 0}
+        for k, v in d.items():
+            new_dict[k] = round((v / len(self.strbases)) * 100, 2)
+        return new_dict
 
