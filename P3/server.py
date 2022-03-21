@@ -58,32 +58,27 @@ while True:
 
         # -- We decode it for converting it
         # -- into a human-redeable string
+
         msg = msg_raw.decode().replace("\n", "").strip()
         splitted_command = msg.split(" ")
         cmd = splitted_command[0]
 
 
+
         # -- Print the received message
 
         if cmd != "PING":
-            try:
-                arg = splitted_command[1]
-                print(Fore.LIGHTGREEN_EX + cmd)
-            except IndexError:
-                arg = False
+            arg = splitted_command[1]
+            print(Fore.LIGHTGREEN_EX + cmd)
 
         if cmd == "PING":
             response = "OK\n"
             cs.send(response.encode())
         elif cmd == "GET":
-            if arg == True:
                 response = sequences[int(arg)]
                 cs.send(response.encode())
                 print(sequences[int(arg)])
-            elif arg == False:
-                for s in sequences:
-                    response = s
-                    cs.send(response.encode())
+
         elif cmd == "INFO":
             print("Sequence:", arg)
             print("The length:", len(arg))
@@ -92,12 +87,13 @@ while True:
             for k, v in d.items():
                 print(k + ":", str(v), str(round((v / len(arg)) * 100, 2)) + "%\n", end=" ")
             response = f"The sequence: {arg}"
-            response2 = f"\nThe lenght of the sequence: {str(len(arg))}"
+            cs.send(response.encode())
+            response = f"\nThe lenght of the sequence: {str(len(arg))}"
             # -- The message has to be encoded into bytes
             cs.send(response.encode())
             for k, v in d.items():
-                    response3 = f"\n{k} : {str(v)} ({round((v / len(arg)) * 100, 2)})%"
-                    cs.send(response3.encode())
+                    response = f"\n{k} : {str(v)} ({round((v / len(arg)) * 100, 2)})%"
+                    cs.send(response.encode())
         elif cmd == "COMP":
             s = Seq(arg)
             complementary = s.complement()
