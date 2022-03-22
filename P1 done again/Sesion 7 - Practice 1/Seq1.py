@@ -69,7 +69,6 @@ class Seq:
                 count_t += 1
         return count_a, count_c, count_g, count_t
 
-
     def seq_count_base(self, base):
         count_a = 0
         count_c = 0
@@ -111,6 +110,7 @@ class Seq:
         else:
             return self.strbases
 
+
     def complement(self):
         if self.valid_sequence():
             frag = self.strbases
@@ -128,13 +128,13 @@ class Seq:
         else:
             return self.strbases
 
-
     @staticmethod
     def get_file2():
         exit = False
         while not exit:
             folder = "./sequences/"
             filename = input("Enter the name of the file: ")
+            file = filename
             try:
                 print(folder + filename + ".txt")
                 f = open(folder + filename + ".txt", "r")
@@ -148,6 +148,7 @@ class Seq:
                     return filename
                 else:
                     print("File was not found")
+
 
 
     def get_file(self):
@@ -168,7 +169,7 @@ class Seq:
                 else:
                     print("File was not found")
 
-    def read_fasta2(self, filename):
+    def read_fasta(self, filename):
         from pathlib import Path
         file_contents = Path(filename).read_text()
         lines = file_contents.splitlines()
@@ -176,6 +177,7 @@ class Seq:
         self.strbases = ""
         for line in body:
             self.strbases += line
+
 
     def processing_genes(self, d):
         highest_value = 0

@@ -35,7 +35,31 @@ def seq_len(s):
     return len(s)
 
 
-def seq_count_base(full_seq):
+def seq_count_base(full_seq, base):
+    count_a = 0
+    count_c = 0
+    count_g = 0
+    count_t = 0
+    for i in full_seq:
+        if i == "A":
+            count_a += 1
+        elif i == "C":
+            count_c += 1
+        elif i == "G":
+            count_g += 1
+        elif i == "T":
+            count_t += 1
+    if base == "A":
+        return count_a
+    elif base == "C":
+        return count_c
+    elif base == "G":
+        return count_g
+    elif base == "T":
+        return count_t
+
+
+def seq_count_base2(full_seq):
     count_a = 0
     count_c = 0
     count_g = 0
@@ -85,3 +109,4 @@ def processing_genes(d):
             highest_value = int(v)
             base = k
     return base
+
