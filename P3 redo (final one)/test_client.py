@@ -1,4 +1,4 @@
-from client0 import Client
+from Client1 import Client
 from colorama import Fore, init
 init(autoreset=True)
 
@@ -19,7 +19,7 @@ exit = False
 while not exit:
     msg = input("What command do you want to test?: ")
     print(Fore.LIGHTCYAN_EX + f"*Testing {msg} command..")
-    c.talk(msg)
+    #c.talk(msg)
     response = c.talk(msg)
     print(response)
 
