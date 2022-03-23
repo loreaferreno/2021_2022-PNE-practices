@@ -8,7 +8,6 @@ class Seq:
         self.strbases = strbases
         if strbases == "NULL":
             print("NULL seq created")
-            exit = False
         else:
             if not self.valid_sequence():
                 self.strbases = "ERROR"
@@ -70,6 +69,31 @@ class Seq:
                 count_t += 1
         return count_a, count_c, count_g, count_t
 
+
+    def seq_count_base(self, base):
+        count_a = 0
+        count_c = 0
+        count_g = 0
+        count_t = 0
+        for i in self.strbases:
+            if i == "A":
+                count_a += 1
+            elif i == "C":
+                count_c += 1
+            elif i == "G":
+                count_g += 1
+            elif i == "T":
+                count_t += 1
+        if base == "A":
+            return count_a
+        elif base == "C":
+            return count_c
+        elif base == "G":
+            return count_g
+        elif base == "T":
+            return count_t
+
+
     def count(self):
         d = {"A": 0, "C": 0, "G": 0, "T": 0}
         for b in self.strbases:
@@ -104,6 +128,28 @@ class Seq:
         else:
             return self.strbases
 
+
+    @staticmethod
+    def get_file2():
+        exit = False
+        while not exit:
+            folder = "./sequences/"
+            filename = input("Enter the name of the file: ")
+            try:
+                print(folder + filename + ".txt")
+                f = open(folder + filename + ".txt", "r")
+                exit = True
+                return folder + filename + ".txt"
+            except FileNotFoundError:
+                if self.filename.lower() == "exit":
+                    print("The program is finished. You pressed exit.")
+                    filename = "none"
+                    exit = True
+                    return filename
+                else:
+                    print("File was not found")
+
+
     def get_file(self):
         exit = False
         while not exit:
@@ -124,7 +170,7 @@ class Seq:
 
     def read_fasta2(self, filename):
         from pathlib import Path
-        file_contents = Path(filename + ".txt").read_text()
+        file_contents = Path(filename).read_text()
         lines = file_contents.splitlines()
         body = lines[1:]
         self.strbases = ""
@@ -139,6 +185,7 @@ class Seq:
                 base = k
         return base
 
+
     def percentages(self, d):
         new_dict = {"A": 0, "C": 0, "G": 0, "T": 0}
         for k, v in d.items():
@@ -152,3 +199,4 @@ class Seq:
         for k, v in new_dict.items():
             if k == base:
                 return v
+

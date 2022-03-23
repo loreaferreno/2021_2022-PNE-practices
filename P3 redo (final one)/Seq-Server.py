@@ -1,6 +1,7 @@
-import socket
-from colorama import init, Fore
+from colorama import Fore, init
 from Seq1 import Seq
+import socket
+init(autoreset=True)
 
 # -- Step 1: create the socket
 ls = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -16,7 +17,6 @@ seq1 = "ATATATATATATATA"
 seq2 = "CACACACACACACAC"
 seq3 = "TGTGTGTGTGTGTGT"
 seq4 = "CGCGCGCGCGCGCGC"
-
 sequences = [seq0, seq1, seq2, seq3, seq4]
 
 # -- Step 1: create the socket
@@ -40,7 +40,7 @@ while True:
     try:
         (cs, client_ip_port) = ls.accept()
 
-        # -- Server stopped manually
+    # -- Server stopped manually
     except KeyboardInterrupt:
         print("Server stopped by the user")
 
@@ -49,8 +49,11 @@ while True:
 
         # -- Exit!
         exit()
+
+    # -- Execute this part if there are no errors
     else:
-        init(autoreset=True)
+
+        print("A client has connected to the server!")
 
         # -- Read the message from the client
         # -- The received message is in raw bytes
@@ -58,61 +61,82 @@ while True:
 
         # -- We decode it for converting it
         # -- into a human-redeable string
-
         msg = msg_raw.decode().replace("\n", "").strip()
         splitted_command = msg.split(" ")
         cmd = splitted_command[0]
 
-
-
-        # -- Print the received message
-
         if cmd != "PING":
             arg = splitted_command[1]
-            print(Fore.LIGHTGREEN_EX + cmd)
 
         if cmd == "PING":
-            response = "OK\n"
+            print(Fore.LIGHTYELLOW_EX + "PING command!!")
+            response = "OK!"
+            print(f"Message sent to the client: {Fore.BLUE + response}")
             cs.send(response.encode())
+
+
         elif cmd == "GET":
-                response = sequences[int(arg)]
-                cs.send(response.encode())
-                print(sequences[int(arg)])
+            print(Fore.LIGHTYELLOW_EX + "GET command!!")
+            exit = False
+            while not exit:
+                if int(arg) <= 4:
+                    response = sequences[int(arg)]
+                    cs.send(response.encode())
+                    print(sequences[int(arg)])
+                    exit = True
+                elif int(arg) > 4:
+                    response = "The sequences are numbers from 0 to 4"
+                    print(response)
+                    cs.send(response.encode())
+                    exit = True
 
 
         elif cmd == "INFO":
             print(Fore.LIGHTYELLOW_EX + "INFO command!!")
+
             seq = Seq(arg)
             print(f"Sequence: {seq}")
+            response = "Sequence: " + str(seq)
+            cs.send(response.encode())
+
             print(f"Total length: {seq.len()}")
+            response = "\nTotal length " + str(seq.len())
+            cs.send(response.encode())
+
             d = seq.count()
             bases = ["A", "C", "G", "T"]
             for b in bases:
                 print(f"{b}:", seq.seq_count_base(b), seq.percentages_base(d, b), "%")
+                response = f"\n{b}:" + str(seq.seq_count_base(b)) + " (" + str(seq.percentages_base(d, b)) + "%) "
+                cs.send(response.encode())
 
         elif cmd == "COMP":
-            s = Seq(arg)
-            complementary = s.complement()
-            print(complementary)
-            response4 = complementary
-            cs.send(response4.encode())
+            print(Fore.LIGHTYELLOW_EX + "COMP command!!")
+            seq = Seq(arg)
+            response = seq.complement()
+            print(response)
+            cs.send(response.encode())
+
         elif cmd == "REV":
-            s = Seq(arg)
-            reverse = s.reverse()
-            print(reverse)
-            response5 = reverse
-            cs.send(response5.encode())
+            print(Fore.LIGHTYELLOW_EX + "REV command!!")
+            seq = Seq(arg)
+            response = seq.reverse()
+            print(response)
+            cs.send(response.encode())
+
         elif cmd == "GENE":
+            print(Fore.LIGHTYELLOW_EX + "GENE command!!")
             s = Seq()
-            s.read_fasta2(arg)
+            folder = "./sequences/"
+            s.read_fasta2(folder + arg + ".txt")
             print(s)
             response = str(s)
             cs.send(response.encode())
 
 
-        else:
-            # -- Send a response message to the client
-            response = "This comand is not available in the server\n"
+
+
+
 
 
 
