@@ -110,6 +110,7 @@ while True:
                 response = f"\n{b}:" + str(seq.seq_count_base(b)) + " (" + str(seq.percentages_base(d, b)) + "%) "
                 cs.send(response.encode())
 
+
         elif cmd == "COMP":
             print(Fore.LIGHTYELLOW_EX + "COMP command!!")
             seq = Seq(arg)
