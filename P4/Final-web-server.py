@@ -36,7 +36,7 @@ def process_client(s):
     # blank line
     # Body (content to send)
 
-    # This new contents are written in HTML language
+    # This new contents are written in html language
     if path == "/":
         body = Path("index.html").read_text()
     elif path == "/info/A":
