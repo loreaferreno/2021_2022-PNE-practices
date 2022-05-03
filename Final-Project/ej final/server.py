@@ -5,42 +5,7 @@ from pathlib import Path
 import jinja2 as j
 from urllib.parse import parse_qs, urlparse
 from Seq1 import Seq
-
-
-HTML_FOLDER = "./html/"
-LIST_SEQUENCES = ["AAAAGGGGGG", "ACGTAGTTT", "GGGTAAACTACG",
-                  "GATACAGATACA", "TGCATGCCGAT", "CATACATACATACATACA"]
-LIST_GENES = ["ADA", "FRAT1", "FXN", "RNU6_269P", "U5"]
-
-def read_html_file(filename):
-    contents = Path(filename).read_text()
-    contents = j.Template(contents)
-    return contents
-
-
-def count_bases(seq):
-    d = {"A": 0, "C": 0, "G": 0, "T": 0}
-    for b in seq:
-        d[b] += 1
-
-    total = sum(d.values())
-    for k,v in d.items():
-        d[k] = [v, (v * 100) / total]
-    return d
-
-
-def convert_message(base_count):
-    message = ""
-    for k,v in base_count.items():
-        message += k + ": " + str(v[0]) + " (" + str(v[1]) + "%)" +"\n"
-    return message
-
-def info_operation(arg):
-    base_count = count_bases(arg)
-    response = "<p> Sequence: " + arg + "</p>"
-    response += "<p> Total length: " + str(len(arg)) + "</p>"
-    response += convert_message(base_count)
-    return response
+import functions as f
 
 # Define the Server's port
 PORT = 8080
@@ -66,17 +31,17 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         url_path = urlparse(self.path)
         path = url_path.path
         arguments = parse_qs(url_path.query)
-        print("The old path was", self.path)
-        print("The new path is", url_path.path)
-        print("arguments", arguments)
         # Message to send back to the clinet
-        if self.path == "/":
-            contents = read_html_file("index.html")\
-                .render(context=
-                        {"n_sequences": len(LIST_SEQUENCES),
-                         "genes": LIST_GENES})
+        if path == "/listSpecies":
+            n_species = arguments["number_species"]
+            PARAMS = "?content-type=application/json"
+            dict_answer = f.create_request(path, params=PARAMS)
+            list_species = dict_answer["species"]
+            list_species = list_species[0:n_species]
+            content = f.read_html_file("html/list_species.html")\ #falta crear el html de la nueva ventana que muestre la lista
+                .render(context={"species": list_species})
         elif path == "/ping":
-            contents = read_html_file(path[1:] + ".html").render()
+            contents = f.read_html_file(path[1:] + ".html").render()
         elif path == "/get":
             n_sequence = int(arguments["n_sequence"][0])
             sequence = LIST_SEQUENCES[n_sequence]
