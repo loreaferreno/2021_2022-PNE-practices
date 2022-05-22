@@ -32,62 +32,46 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         path = url_path.path
         arguments = parse_qs(url_path.query)
         # Message to send back to the clinet
-        if path == "/listSpecies":
-            n_species = arguments["number_species"]
-            PARAMS = "?content-type=application/json"
-            dict_answer = f.create_request(path, params=PARAMS)
+        if path == "/":
+            contents = f.read_html_file("index.html").render()
+        elif path == "/listSpecies":
+            if arguments == {}:
+                n_species = "-1"
+            elif arguments != {}:
+                n_species = (arguments["number_species"][0])
+            PARAMS = "/info/species?content-type=application/json"
+            dict_answer = f.create_request(url= "", params=PARAMS)
             list_species = dict_answer["species"]
-            list_species = list_species[0:n_species]
-            content = f.read_html_file("html/list_species.html")\ #falta crear el html de la nueva ventana que muestre la lista
-                .render(context={"species": list_species})
+            list_species = list_species[0:int(n_species)]
+            list_species_2 = []
+            for l in list_species:
+                for k,v in l.items():
+                    if k == "display_name":
+                        list_species_2.append(v)
+            contents = f.read_html_file("list_species.html")\
+                .render(context={"species": list_species_2,
+                        "n_species": len(list_species_2)})
+        elif path == "/karyotype":
+            species = (arguments["species"][0])
+            REQ = "/info/assembly/"
+            PARAMS = "?content-type=application/json"
+            dict_answer = f.create_request(url= REQ + species, params=PARAMS)
+            karyotype = dict_answer["karyotype"]
+            contents = f.read_html_file("karyotype.html") \
+                .render(context={"species": species.upper(),
+                                 "karyotype": karyotype})
         elif path == "/ping":
             contents = f.read_html_file(path[1:] + ".html").render()
         elif path == "/get":
             n_sequence = int(arguments["n_sequence"][0])
             sequence = LIST_SEQUENCES[n_sequence]
-            contents = read_html_file(path[1:] + ".html")\
+            contents = f.read_html_file(path[1:] + ".html")\
                 .render(context = {
                 "n_sequence": n_sequence,
                 "sequence": sequence
-            })
-        elif path == "/gene":
-            gene_name = arguments["gene_name"][0]
-            sequence = Path("./sequences/" + gene_name + ".txt").read_text()
-            contents = read_html_file(path[1:] + ".html") \
-                .render(context={
-                "gene_name": gene_name,
-                "sequence": sequence
-            })
-        elif path == "/operation":
-            sequence = arguments["sequence"][0]
-            operation = arguments["operation"][0]
-            s1 = Seq(sequence)
-            if operation == "rev":
-                contents = read_html_file(path[1:] + ".html") \
-                    .render(context={
-                    "operation": operation,
-                    "result": s1.reverse()
-                })
-            elif operation == "info":
-                contents = read_html_file(path[1:] + ".html") \
-                    .render(context={
-                    "operation": operation,
-                    "result": info_operation(sequence)
-                })
-            elif operation == "comp":
-                contents = read_html_file(path[1:] + ".html") \
-                    .render(context={
-                    "operation": operation,
-                    "result": s1.complement()
-                })
-            elif operation == "add":
-                contents = read_html_file(path[1:] + ".html") \
-                    .render(context={
-                    "operation": operation,
-                    "result": s1.adding()
                 })
         else:
-            contents = "I am the happy server! :-)"
+            pass
 
         # Generating the response message
         self.send_response(200)  # -- Status line: OK!

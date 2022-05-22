@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Karyotype</title>
+</head>
+<body style="background-color: peru">
+<body>
+    <h1>THE NAMES OF THE {{context.species}} CHROMOSOMES ARE:</h1>
+        {% for k in context.karyotype %}
+        <h3> ⊳ {{k}} </h3>
+        {% endfor %}
+
+    <a href="/">CLICK HERE TO RETURN TO THE MAIN PAGE</a>
+
+</body>
+</html>

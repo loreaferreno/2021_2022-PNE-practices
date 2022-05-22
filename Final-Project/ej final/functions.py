@@ -27,5 +27,5 @@ def create_request(url, params):
     # -- Read the response's body
     data1 = r1.read().decode("utf-8")
     # -- Print the received data
-    print(f"CONTENT: {data1}")
+    #print(f"CONTENT: {data1}")
     return json.loads(data1)

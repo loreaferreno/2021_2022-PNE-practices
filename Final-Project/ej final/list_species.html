@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>List of species</title>
+</head>
+<body style="background-color: lightseagreen">
+<body>
+    <h1>LIST OF {{context.n_species}} ENSEMBL SPECIES 𓆉</h1>
+
+        {% for s in context.species %}
+        <h3> ◉ {{s}} </h3>
+        {% endfor %}
+
+    <a href="/">CLICK HERE TO RETURN TO THE MAIN PAGE</a>
+
+</body>
+</html>
