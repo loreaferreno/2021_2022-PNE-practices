@@ -7,6 +7,17 @@ from urllib.parse import parse_qs, urlparse
 from Seq1 import Seq
 import functions as f
 
+genes_dict = {"SRCAP": "ENSG00000080603",
+              "FRAT1": "ENSG00000165879",
+              "ADA": "ENSG00000196839",
+              "RNU6_269P": "ENSG00000212379",
+              "FXN": "ENSG00000165060",
+              "MIR633": "ENSG00000207552",
+              "TTTY4": "ENSG00000228296",
+              "RBMY2YP": "ENSG00000227633",
+              "FGFR3": "ENSG00000068078",
+              "KDR": "ENSG00000128052",
+              "ANK2": "ENSG00000145362"}
 # Define the Server's port
 PORT = 8080
 
@@ -35,43 +46,102 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         if path == "/":
             contents = f.read_html_file("index.html").render()
         elif path == "/listSpecies":
-            if arguments == {}:
-                n_species = "-1"
-            elif arguments != {}:
-                n_species = (arguments["number_species"][0])
-            PARAMS = "/info/species?content-type=application/json"
-            dict_answer = f.create_request(url= "", params=PARAMS)
-            list_species = dict_answer["species"]
-            list_species = list_species[0:int(n_species)]
-            list_species_2 = []
-            for l in list_species:
-                for k,v in l.items():
-                    if k == "display_name":
-                        list_species_2.append(v)
-            contents = f.read_html_file("list_species.html")\
-                .render(context={"species": list_species_2,
-                        "n_species": len(list_species_2)})
+            try:
+                if int(arguments["number_species"][0]) > 310:
+                    contents = f.read_html_file("error.html") \
+                        .render(context={})
+                else:
+                    if arguments == {}:
+                        n_species = "-1"
+                    elif arguments != {}:
+                        n_species = (arguments["number_species"][0])
+                    PARAMS = "/info/species?content-type=application/json"
+                    dict_answer = f.create_request(url= "", params=PARAMS)
+                    list_species = dict_answer["species"]
+                    list_species = list_species[0:int(n_species)]
+                    list_species_2 = []
+                    for l in list_species:
+                        for k,v in l.items():
+                            if k == "display_name":
+                                list_species_2.append(v)
+                    contents = f.read_html_file("list_species.html")\
+                        .render(context={"species": list_species_2,
+                                "n_species": len(list_species_2)})
+            except ValueError:
+                contents = f.read_html_file("error.html") \
+                    .render(context={})
         elif path == "/karyotype":
-            species = (arguments["species"][0])
-            REQ = "/info/assembly/"
-            PARAMS = "?content-type=application/json"
-            dict_answer = f.create_request(url= REQ + species, params=PARAMS)
-            karyotype = dict_answer["karyotype"]
-            contents = f.read_html_file("karyotype.html") \
-                .render(context={"species": species.upper(),
-                                 "karyotype": karyotype})
-        elif path == "/ping":
-            contents = f.read_html_file(path[1:] + ".html").render()
-        elif path == "/get":
-            n_sequence = int(arguments["n_sequence"][0])
-            sequence = LIST_SEQUENCES[n_sequence]
-            contents = f.read_html_file(path[1:] + ".html")\
-                .render(context = {
-                "n_sequence": n_sequence,
-                "sequence": sequence
-                })
+            try:
+                species = (arguments["species"][0])
+                REQ = "/info/assembly/"
+                PARAMS = "?content-type=application/json"
+                dict_answer = f.create_request(url= REQ + species, params=PARAMS)
+                karyotype = dict_answer["karyotype"]
+                contents = f.read_html_file("karyotype.html") \
+                    .render(context={"species": species.upper(),
+                                     "karyotype": karyotype})
+            except KeyError:
+                contents = f.read_html_file("error.html") \
+                    .render(context={})
+        elif path == "/chromosomeLength":
+            try:
+                species = (arguments["species"][0])
+                chromo = (arguments["chromosome"][0])
+                REQ = "/info/assembly/"
+                PARAMS = "?content-type=application/json"
+                dict_answer = f.create_request(url=REQ + species, params=PARAMS)
+                try:
+                    for l in dict_answer["top_level_region"]:
+                        if l["name"] == chromo:
+                            length = l["length"]
+                    contents = f.read_html_file("chromosome_length.html") \
+                        .render(context={"species": species,
+                                        "chromosome": chromo,
+                                        "length": length})
+                except UnboundLocalError:
+                    contents = f.read_html_file("error.html") \
+                        .render(context={})
+            except KeyError:
+                contents = f.read_html_file("error.html") \
+                    .render(context={})
+        elif path == "/geneSeq":
+            gene_name = (arguments["gene"][0])
+            for gene, id in genes_dict.items():
+                if gene == gene_name:
+                    REQ = "/sequence/id/"
+                    PARAMS = "?content-type=application/json"
+                    dict_answer = f.create_request(url=REQ + id, params=PARAMS)
+                    sequence = dict_answer["seq"]
+                    contents = f.read_html_file("gene_sequence.html") \
+                        .render(context={"gene": gene_name,
+                                             "sequence": sequence})
+        elif path == "/geneInfo":
+            gene_name = (arguments["gene"][0])
+            for gene, id in genes_dict.items():
+                if gene == gene_name:
+                    REQ = "/sequence/id/"
+                    PARAMS = "?content-type=application/json"
+                    dict_answer = f.create_request(url=REQ + id, params=PARAMS)
+                    sequence = dict_answer["seq"]
+                    id = dict_answer["id"]
+                    length = len(sequence)
+                    info = dict_answer["desc"]
+                    info = info.split(":")
+                    start = info[3]
+                    end = info[4]
+                    chromosome_name = info[1]
+                    contents = f.read_html_file("gene_info.html") \
+                        .render(context={"gene": gene_name,
+                                         "start": start,
+                                         "end": end,
+                                         "length": length,
+                                         "id": id,
+                                         "chromosome_name": chromosome_name})
+
         else:
-            pass
+            contents = f.read_html_file("error.html") \
+                .render(context={})
+
 
         # Generating the response message
         self.send_response(200)  # -- Status line: OK!

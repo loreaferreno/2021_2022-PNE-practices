@@ -7,7 +7,6 @@
 <body style="background-color: lemonchiffon">
     <h1>Browsing Human and Vertebrates genome 🧬 </h1>
     <h2>BASIC Level Services</h2>
-    <br>
     <form action="/listSpecies">
         1) List of species in the genome database <br>
         Limit: <input type="text" name="number_species">
@@ -22,14 +21,25 @@
         <input type="submit" value="SEND">
     </form>
     <br>
-<form action="/operation">
+<form action="/chromosomeLength">
         3) Chromosome length <br>
-        Select the species: <input type="text" name="sequence"><br>
-        Select a chromosome: <input type="text" name="sequence">
+        Select the species: <input type="text" name="species"><br>
+        Select a chromosome: <input type="text" name="chromosome">
         <br>
         <input type="submit" value="SEND">
     </form>
+    <hr>
+<h2>MEDIUM Level Services</h2>
+<form action="/geneSeq">
+        4) Obtain the sequence of a human gene <br>
+        Select the gene: <input type="text" name="gene"><br>
+        <input type="submit" value="SEND">
+    </form>
     <br>
-
+<form action="/geneInfo">
+        5) Obtain the information of a human gene <br>
+        Select the gene: <input type="text" name="gene"><br>
+        <input type="submit" value="SEND">
+    </form>
 </body>
 </html>
