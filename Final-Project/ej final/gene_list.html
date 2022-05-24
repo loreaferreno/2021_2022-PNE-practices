@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gene list</title>
+</head>
+<body style="background-color: lightsalmon">
+<body>
+    <h1>LIST OF GENES IN CHROMOSOME {{context.chromo}} FROM POSITION {{context.start}} TO {{context.end}}</h1>
+    <h3>{{context.length}}</h3>
+    {% for k in context.genes_list %}
+        <h3> ⊳ {{k}} </h3>
+        {% endfor %}
+    <a href="/">CLICK HERE TO RETURN TO THE MAIN PAGE</a>
+
+</body>
+</html>

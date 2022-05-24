@@ -137,7 +137,29 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
                                          "length": length,
                                          "id": id,
                                          "chromosome_name": chromosome_name})
-
+        elif path == "/geneCalc":
+            gene_name = (arguments["gene"][0])
+            for gene, id in genes_dict.items():
+                if gene == gene_name:
+                    REQ = "/sequence/id/"
+                    PARAMS = "?content-type=application/json"
+                    dict_answer = f.create_request(url=REQ + id, params=PARAMS)
+                    sequence = dict_answer["seq"]
+                    s1 = Seq(sequence)
+                    calc = s1.info()
+                    calculations = calc.split("\n")
+                    length = calculations[0]
+                    base_a = calculations[1]
+                    base_c = calculations[2]
+                    base_g = calculations[3]
+                    base_t = calculations[4]
+                    contents = f.read_html_file("gene_calc.html") \
+                        .render(context={"gene": gene_name,
+                                         "length": length,
+                                         "base_a": base_a,
+                                         "base_c": base_c,
+                                         "base_g": base_g,
+                                         "base_t": base_t})
         else:
             contents = f.read_html_file("error.html") \
                 .render(context={})
