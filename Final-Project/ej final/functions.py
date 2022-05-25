@@ -208,9 +208,12 @@ def gene_list(arguments):
         list_answer = create_request(url=REQ + chromo + ":" + start + "-" + end, params=PARAMS)
         genes_list = []
         for l in list_answer:
-            for k,v in l.items():
-                if k == "id":
-                    genes_list.append(v)
+            d = l["phenotype_associations"]
+            try:
+                for dict in d:
+                    genes_list.append(dict["attributes"]["associated_gene"])
+            except KeyError:
+                pass
         contents = read_html_file("gene_list.html") \
             .render(context={"genes_list": genes_list,
                         "chromo": chromo,
