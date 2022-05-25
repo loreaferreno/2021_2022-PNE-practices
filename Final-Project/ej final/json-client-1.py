@@ -12,20 +12,30 @@ conn = http.client.HTTPConnection(SERVER, PORT)
 
 # -- Send the request message, using the GET method. We are
 # -- requesting the main page (/)
-try:
-    conn.request("GET", "/chromosomeLength?species=dog&chromosome=20&json=1")
-except ConnectionRefusedError:
-    print("ERROR! Cannot connect to the Server")
-    exit()
+def connection(ENDPOINT, PARAMS):
+    try:
+        conn.request("GET", ENDPOINT + PARAMS)
+    except ConnectionRefusedError:
+        print("ERROR! Cannot connect to the Server")
+        exit()
 
-# -- Read the response message from the server
-r1 = conn.getresponse()
+    # -- Read the response message from the server
+    r1 = conn.getresponse()
 
-# -- Print the status line
-print(f"Response received!: {r1.status} {r1.reason}\n")
+    # -- Print the status line
+    print(f"Response received!: {r1.status} {r1.reason}\n")
 
-# -- Read the response's body
-data1 = r1.read().decode("utf-8")
+    # -- Read the response's body
+    data1 = r1.read().decode("utf-8")
 
-# -- Print the received data
-print(f"CONTENT: {data1}")
+    # -- Print the received data
+    return data1
+
+ENDPOINT = input("Please introduce the desired endpoint: ")
+PARAMS = input("Please introduce the desired parameters: ")
+data1 = connection(ENDPOINT, PARAMS)
+print(data1)
+
+#Here I leave some examples so it is easier to check if it is functioning
+# ENDPOINTS: /listSpecies , /chromosomeLength , /geneList
+# PARAMS: ?number_species=12&json=1 , ?species=dog&chromosome=20&json=1 , ?chromo=1&start=22125500&end=22136000&json=1
