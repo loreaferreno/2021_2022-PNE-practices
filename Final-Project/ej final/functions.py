@@ -48,6 +48,7 @@ def list_species(arguments):
         if int(arguments["number_species"][0]) > 310:
             contents = read_html_file("error.html") \
                 .render(context={})
+            jeyson = {}
         else:
             if arguments == {}:
                 n_species = "-1"
@@ -65,10 +66,13 @@ def list_species(arguments):
             contents = read_html_file("list_species.html") \
                 .render(context={"species": list_species_2,
                         "n_species": len(list_species_2)})
+            jeyson = {"species": list_species_2,
+                        "n_species": len(list_species_2)}
     except ValueError:
         contents = read_html_file("error.html") \
             .render(context={})
-    return contents
+        jeyson = {}
+    return contents, jeyson
 
 def karyotype(arguments):
     try:
@@ -80,10 +84,13 @@ def karyotype(arguments):
         contents = read_html_file("karyotype.html") \
             .render(context={"species": species.upper(),
                              "karyotype": karyotype})
+        jeyson = {"species": species.upper(),
+                    "karyotype": karyotype}
     except KeyError:
         contents = read_html_file("error.html") \
             .render(context={})
-    return contents
+        jeyson = {}
+    return contents, jeyson
 
 def chromosome_length(arguments):
     try:
@@ -100,13 +107,18 @@ def chromosome_length(arguments):
                 .render(context={"species": species,
                                  "chromosome": chromo,
                                  "length": length})
+            jeyson = {"species": species,
+                        "chromosome": chromo,
+                        "length": length}
         except UnboundLocalError:
             contents = read_html_file("error.html") \
                 .render(context={})
+            jeyson = {}
     except KeyError:
         contents = read_html_file("error.html") \
             .render(context={})
-    return contents
+        jeyson = {}
+    return contents, jeyson
 
 def gene_seq(arguments):
     try:
@@ -120,17 +132,20 @@ def gene_seq(arguments):
                 contents = read_html_file("gene_sequence.html") \
                     .render(context={"gene": gene_name,
                                      "sequence": sequence})
-
-        return contents
+                jeyson = {"gene": gene_name,
+                            "sequence": sequence}
+        return contents, jeyson
 
     except UnboundLocalError:
         contents = read_html_file("error.html") \
                 .render(context={})
-        return contents
+        jeyson = {}
+        return contents, jeyson
     except KeyError:
         contents = read_html_file("error.html") \
             .render(context={})
-        return contents
+        jeyson = {}
+        return contents, jeyson
 def gene_info(arguments):
     try:
         gene_name = (arguments["gene"][0])
@@ -154,15 +169,23 @@ def gene_info(arguments):
                                      "length": length,
                                      "id": id,
                                      "chromosome_name": chromosome_name})
-        return contents
+                jeyson = {"gene": gene_name,
+                            "start": start,
+                            "end": end,
+                            "length": length,
+                            "id": id,
+                            "chromosome_name": chromosome_name}
+        return contents, jeyson
     except UnboundLocalError:
         contents = read_html_file("error.html") \
             .render(context={})
-        return contents
+        jeyson = {}
+        return contents, jeyson
     except KeyError:
         contents = read_html_file("error.html") \
             .render(context={})
-        return contents
+        jeyson = {}
+        return contents, jeyson
 
 def gene_calc(arguments):
     try:
@@ -188,15 +211,23 @@ def gene_calc(arguments):
                                      "base_c": base_c,
                                      "base_g": base_g,
                                      "base_t": base_t})
-        return contents
+                jeyson = {"gene": gene_name,
+                            "length": length,
+                            "base_a": base_a,
+                            "base_c": base_c,
+                            "base_g": base_g,
+                            "base_t": base_t}
+        return contents, jeyson
     except UnboundLocalError:
         contents = read_html_file("error.html") \
             .render(context={})
-        return contents
+        jeyson = {}
+        return contents, jeyson
     except KeyError:
         contents = read_html_file("error.html") \
             .render(context={})
-        return contents
+        jeyson = {}
+        return contents, jeyson
 
 def gene_list(arguments):
     try:
@@ -219,16 +250,21 @@ def gene_list(arguments):
                         "chromo": chromo,
                         "start": start,
                         "end": end})
-        return contents
+        jeyson = {"genes_list": genes_list,
+                        "chromo": chromo,
+                        "start": start,
+                        "end": end}
+        return contents, jeyson
     except AttributeError:
         contents = read_html_file("error.html") \
             .render(context={})
-        return contents
+        jeyson = {}
+        return contents, jeyson
     except KeyError:
         contents = read_html_file("error.html") \
             .render(context={})
-        return contents
-
+        jeyson = {}
+        return contents, jeyson
 
 
 
