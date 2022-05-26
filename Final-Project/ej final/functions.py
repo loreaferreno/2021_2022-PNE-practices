@@ -52,7 +52,7 @@ def list_species(arguments):
             if "json" in arguments.keys() and arguments["json"] == ['1']:
                 contents = {}
             else:
-                contents = read_html_file("error.html") \
+                contents = read_html_file("html/error.html") \
                     .render(context={})
             return contents
 
@@ -73,7 +73,7 @@ def list_species(arguments):
                 contents = {"species": list_species_2,
                             "n_species": len(list_species_2)}
             else:
-                contents = read_html_file("list_species.html") \
+                contents = read_html_file("html/list_species.html") \
                     .render(context={"species": list_species_2,
                         "n_species": len(list_species_2)})
 
@@ -86,7 +86,7 @@ def list_species(arguments):
         if "json" in arguments.keys() and arguments["json"] == ['1']:
             contents = {}
         else:
-            contents = read_html_file("error.html") \
+            contents = read_html_file("html/error.html") \
                 .render(context={})
 
     return contents
@@ -103,7 +103,7 @@ def karyotype(arguments):
             contents = {"species": species.upper(),
                         "karyotype": karyotype}
         else:
-            contents = read_html_file("karyotype.html") \
+            contents = read_html_file("html/karyotype.html") \
             .render(context={"species": species.upper(),
                              "karyotype": karyotype})
 
@@ -111,7 +111,7 @@ def karyotype(arguments):
         if "json" in arguments.keys() and arguments["json"] == ['1']:
             contents = {}
         else:
-            contents = read_html_file("error.html") \
+            contents = read_html_file("html/error.html") \
             .render(context={})
 
     return contents
@@ -133,7 +133,7 @@ def chromosome_length(arguments):
                         "chromosome": chromo,
                         "length": length}
             else:
-                contents = read_html_file("chromosome_length.html") \
+                contents = read_html_file("html/chromosome_length.html") \
                     .render(context={"species": species,
                                  "chromosome": chromo,
                                  "length": length})
@@ -142,13 +142,13 @@ def chromosome_length(arguments):
             if "json" in arguments.keys() and arguments["json"] == ['1']:
                 contents = {}
             else:
-                contents = read_html_file("error.html") \
+                contents = read_html_file("html/error.html") \
                     .render(context={})
     except KeyError:
         if "json" in arguments.keys() and arguments["json"] == ['1']:
             contents = {}
         else:
-            contents = read_html_file("error.html") \
+            contents = read_html_file("html/error.html") \
                 .render(context={})
     return contents
 
@@ -165,7 +165,7 @@ def gene_seq(arguments):
                     contents = {"gene": gene_name,
                               "sequence": sequence}
                 else:
-                    contents = read_html_file("gene_sequence.html") \
+                    contents = read_html_file("html/gene_sequence.html") \
                     .render(context={"gene": gene_name,
                                      "sequence": sequence})
         return contents
@@ -174,14 +174,14 @@ def gene_seq(arguments):
         if "json" in arguments.keys() and arguments["json"] == ['1']:
             contents = {}
         else:
-            contents = read_html_file("error.html") \
+            contents = read_html_file("html/error.html") \
                 .render(context={})
         return contents
     except KeyError:
         if "json" in arguments.keys() and arguments["json"] == ['1']:
             contents = {}
         else:
-            contents = read_html_file("error.html") \
+            contents = read_html_file("html/error.html") \
                 .render(context={})
         return contents
 
@@ -209,7 +209,7 @@ def gene_info(arguments):
                             "id": id,
                             "chromosome_name": chromosome_name}
                 else:
-                    contents = read_html_file("gene_info.html") \
+                    contents = read_html_file("html/gene_info.html") \
                         .render(context={"gene": gene_name,
                                         "start": start,
                                         "end": end,
@@ -221,14 +221,14 @@ def gene_info(arguments):
         if "json" in arguments.keys() and arguments["json"] == ['1']:
             contents = {}
         else:
-            contents = read_html_file("error.html") \
+            contents = read_html_file("html/error.html") \
                 .render(context={})
         return contents
     except KeyError:
         if "json" in arguments.keys() and arguments["json"] == ['1']:
             contents = {}
         else:
-            contents = read_html_file("error.html") \
+            contents = read_html_file("html/error.html") \
                 .render(context={})
         return contents
 
@@ -257,7 +257,7 @@ def gene_calc(arguments):
                             "base_g": base_g,
                             "base_t": base_t}
                 else:
-                    contents = read_html_file("gene_calc.html") \
+                    contents = read_html_file("html/gene_calc.html") \
                     .render(context={"gene": gene_name,
                                      "length": length,
                                      "base_a": base_a,
@@ -269,14 +269,14 @@ def gene_calc(arguments):
         if "json" in arguments.keys() and arguments["json"] == ['1']:
             contents = {}
         else:
-            contents = read_html_file("error.html") \
+            contents = read_html_file("html/error.html") \
                 .render(context={})
         return contents
     except KeyError:
         if "json" in arguments.keys() and arguments["json"] == ['1']:
             contents = {}
         else:
-            contents = read_html_file("error.html") \
+            contents = read_html_file("html/error.html") \
                 .render(context={})
         return contents
 
@@ -302,7 +302,7 @@ def gene_list(arguments):
                         "start": start,
                         "end": end}
         else:
-            contents = read_html_file("gene_list.html") \
+            contents = read_html_file("html/gene_list.html") \
                 .render(context={"genes_list": genes_list,
                         "chromo": chromo,
                         "start": start,
@@ -313,14 +313,14 @@ def gene_list(arguments):
         if "json" in arguments.keys() and arguments["json"] == ['1']:
             contents = {}
         else:
-            contents = read_html_file("error.html") \
+            contents = read_html_file("html/error.html") \
                 .render(context={})
         return contents
     except KeyError:
         if "json" in arguments.keys() and arguments["json"] == ['1']:
             contents = {}
         else:
-            contents = read_html_file("error.html") \
+            contents = read_html_file("html/error.html") \
                 .render(context={})
         return contents
 

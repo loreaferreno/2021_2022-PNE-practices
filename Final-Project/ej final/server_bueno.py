@@ -35,7 +35,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         arguments = parse_qs(url_path.query)
         # Message to send back to the clinet
         if path == "/":
-            contents = f.read_html_file("index.html").render()
+            contents = f.read_html_file("html/index.html").render()
         elif path == "/listSpecies":
             contents = f.list_species(arguments)
         elif path == "/karyotype":
@@ -51,7 +51,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         elif path == "/geneList":
             contents  = f.gene_list(arguments)
         else:
-            contents = f.read_html_file("error.html") \
+            contents = f.read_html_file("html/error.html") \
                 .render(context={})
 
         self.send_response(200)  # -- Status line: OK!

@@ -37,5 +37,6 @@ data1 = connection(ENDPOINT, PARAMS)
 print(data1)
 
 #Here I leave some examples so it is easier to check if it is functioning
-# ENDPOINTS: /listSpecies , /chromosomeLength , /geneList
-# PARAMS: ?number_species=12&json=1 , ?species=dog&chromosome=20&json=1 , ?chromo=1&start=22125500&end=22136000&json=1
+# ENDPOINTS: (1) /listSpecies , (2) /chromosomeLength , (3) /karyotype , (4) /geneList (respectively in order with params)
+# PARAMS: (1) ?number_species=12&json=1 , (2) ?species=dog&chromosome=20&json=1 , (3) ?species=dog&json=1 ,
+# (4) ?chromo=1&start=22125500&end=22136000&json=1
