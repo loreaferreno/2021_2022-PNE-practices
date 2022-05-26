@@ -37,11 +37,11 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         if path == "/":
             contents = f.read_html_file("index.html").render()
         elif path == "/listSpecies":
-            contents, jeyson = f.list_species(arguments)
+            contents = f.list_species(arguments)
         elif path == "/karyotype":
-            contents, jeyson = f.karyotype(arguments)
+            contents = f.karyotype(arguments)
         elif path == "/chromosomeLength":
-            contents, jeyson = f.chromosome_length(arguments)
+            contents = f.chromosome_length(arguments)
         elif path == "/geneSeq":
             contents = f.gene_seq(arguments)
         elif path == "/geneInfo":
@@ -49,45 +49,31 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         elif path == "/geneCalc":
             contents = f.gene_calc(arguments)
         elif path == "/geneList":
-            contents, jeyson = f.gene_list(arguments)
+            contents  = f.gene_list(arguments)
         else:
             contents = f.read_html_file("error.html") \
                 .render(context={})
-        try:
-            if arguments["json"][0] == "1":
-                data = jeyson
-                if data == {}:
-                    data = {"This is a json telling you that there has been an" : "Error :("}
-                json_dump = json.dumps(data)
-                contents = json_dump
 
-                self.send_response(200)  # -- Status line: OK!
-
-                # Define the content-type header:
-                self.send_header('Content-Type', 'application/json')
-                self.send_header('Content-Length', len(contents.encode()))
-
-                # The header is finished
-                self.end_headers()
-
-                # Send the response message
-                self.wfile.write(contents.encode())
-        except KeyError:
-
+        self.send_response(200)  # -- Status line: OK!
             # Generating the response message
-            self.send_response(200)  # -- Status line: OK!
+        if "json" in arguments.keys() and arguments["json"] == ['1']:
+            if contents == {}:
+                contents = {"There has been an": "ERROR :("}
+            contents = json.dumps(contents)
+            self.send_header('Content-Type', 'application/json')
 
             # Define the content-type header:
+        else:
             self.send_header('Content-Type', 'text/html')
-            self.send_header('Content-Length', len(contents.encode()))
+        self.send_header('Content-Length', len(contents.encode()))
 
             # The header is finished
-            self.end_headers()
+        self.end_headers()
 
             # Send the response message
-            self.wfile.write(contents.encode())
+        self.wfile.write(contents.encode())
 
-            return
+        return
 
 
 # ------------------------

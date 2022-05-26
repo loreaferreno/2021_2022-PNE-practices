@@ -44,16 +44,22 @@ def create_request(url, params):
     return json.loads(data1)
 
 def list_species(arguments):
+
+    if len(arguments) == 0:
+        arguments = {'number_species': ['310']}
     try:
         if int(arguments["number_species"][0]) > 310:
-            contents = read_html_file("error.html") \
-                .render(context={})
-            jeyson = {}
+            if "json" in arguments.keys() and arguments["json"] == ['1']:
+                contents = {}
+            else:
+                contents = read_html_file("error.html") \
+                    .render(context={})
+            return contents
+
         else:
-            if arguments == {}:
-                n_species = "-1"
-            elif arguments != {}:
-                n_species = (arguments["number_species"][0])
+            if "number_species" in arguments.keys():
+                    n_species = (arguments["number_species"][0])
+            print(n_species)
             PARAMS = "/info/species?content-type=application/json"
             dict_answer = create_request(url="", params=PARAMS)
             list_species = dict_answer["species"]
@@ -63,16 +69,28 @@ def list_species(arguments):
                 for k, v in l.items():
                     if k == "display_name":
                         list_species_2.append(v)
-            contents = read_html_file("list_species.html") \
-                .render(context={"species": list_species_2,
+            if "json" in arguments.keys() and arguments["json"] == ['1']:
+                contents = {"species": list_species_2,
+                            "n_species": len(list_species_2)}
+            else:
+                contents = read_html_file("list_species.html") \
+                    .render(context={"species": list_species_2,
                         "n_species": len(list_species_2)})
-            jeyson = {"species": list_species_2,
-                        "n_species": len(list_species_2)}
+
+            return contents
+
+    except KeyError:
+        pass
+
     except ValueError:
-        contents = read_html_file("error.html") \
-            .render(context={})
-        jeyson = {}
-    return contents, jeyson
+        if "json" in arguments.keys() and arguments["json"] == ['1']:
+            contents = {}
+        else:
+            contents = read_html_file("error.html") \
+                .render(context={})
+
+    return contents
+
 
 def karyotype(arguments):
     try:
@@ -81,16 +99,22 @@ def karyotype(arguments):
         PARAMS = "?content-type=application/json"
         dict_answer = create_request(url=REQ + species, params=PARAMS)
         karyotype = dict_answer["karyotype"]
-        contents = read_html_file("karyotype.html") \
+        if "json" in arguments.keys() and arguments["json"] == ['1']:
+            contents = {"species": species.upper(),
+                        "karyotype": karyotype}
+        else:
+            contents = read_html_file("karyotype.html") \
             .render(context={"species": species.upper(),
                              "karyotype": karyotype})
-        jeyson = {"species": species.upper(),
-                    "karyotype": karyotype}
+
     except KeyError:
-        contents = read_html_file("error.html") \
+        if "json" in arguments.keys() and arguments["json"] == ['1']:
+            contents = {}
+        else:
+            contents = read_html_file("error.html") \
             .render(context={})
-        jeyson = {}
-    return contents, jeyson
+
+    return contents
 
 def chromosome_length(arguments):
     try:
@@ -103,22 +127,30 @@ def chromosome_length(arguments):
             for l in dict_answer["top_level_region"]:
                 if l["name"] == chromo:
                     length = l["length"]
-            contents = read_html_file("chromosome_length.html") \
-                .render(context={"species": species,
-                                 "chromosome": chromo,
-                                 "length": length})
-            jeyson = {"species": species,
+
+            if "json" in arguments.keys() and arguments["json"] == ['1']:
+                contents = {"species": species,
                         "chromosome": chromo,
                         "length": length}
+            else:
+                contents = read_html_file("chromosome_length.html") \
+                    .render(context={"species": species,
+                                 "chromosome": chromo,
+                                 "length": length})
+
         except UnboundLocalError:
+            if "json" in arguments.keys() and arguments["json"] == ['1']:
+                contents = {}
+            else:
+                contents = read_html_file("error.html") \
+                    .render(context={})
+    except KeyError:
+        if "json" in arguments.keys() and arguments["json"] == ['1']:
+            contents = {}
+        else:
             contents = read_html_file("error.html") \
                 .render(context={})
-            jeyson = {}
-    except KeyError:
-        contents = read_html_file("error.html") \
-            .render(context={})
-        jeyson = {}
-    return contents, jeyson
+    return contents
 
 def gene_seq(arguments):
     try:
@@ -129,23 +161,30 @@ def gene_seq(arguments):
                 PARAMS = "?content-type=application/json"
                 dict_answer = create_request(url=REQ + id, params=PARAMS)
                 sequence = dict_answer["seq"]
-                contents = read_html_file("gene_sequence.html") \
+                if "json" in arguments.keys() and arguments["json"] == ['1']:
+                    contents = {"gene": gene_name,
+                              "sequence": sequence}
+                else:
+                    contents = read_html_file("gene_sequence.html") \
                     .render(context={"gene": gene_name,
                                      "sequence": sequence})
-                jeyson = {"gene": gene_name,
-                            "sequence": sequence}
-        return contents, jeyson
+        return contents
 
     except UnboundLocalError:
-        contents = read_html_file("error.html") \
+        if "json" in arguments.keys() and arguments["json"] == ['1']:
+            contents = {}
+        else:
+            contents = read_html_file("error.html") \
                 .render(context={})
-        jeyson = {}
-        return contents, jeyson
+        return contents
     except KeyError:
-        contents = read_html_file("error.html") \
-            .render(context={})
-        jeyson = {}
-        return contents, jeyson
+        if "json" in arguments.keys() and arguments["json"] == ['1']:
+            contents = {}
+        else:
+            contents = read_html_file("error.html") \
+                .render(context={})
+        return contents
+
 def gene_info(arguments):
     try:
         gene_name = (arguments["gene"][0])
@@ -162,30 +201,36 @@ def gene_info(arguments):
                 start = info[3]
                 end = info[4]
                 chromosome_name = info[1]
-                contents = read_html_file("gene_info.html") \
-                    .render(context={"gene": gene_name,
-                                     "start": start,
-                                     "end": end,
-                                     "length": length,
-                                     "id": id,
-                                     "chromosome_name": chromosome_name})
-                jeyson = {"gene": gene_name,
+                if "json" in arguments.keys() and arguments["json"] == ['1']:
+                    contents = {"gene": gene_name,
                             "start": start,
                             "end": end,
                             "length": length,
                             "id": id,
                             "chromosome_name": chromosome_name}
-        return contents, jeyson
+                else:
+                    contents = read_html_file("gene_info.html") \
+                        .render(context={"gene": gene_name,
+                                        "start": start,
+                                        "end": end,
+                                        "length": length,
+                                        "id": id,
+                                        "chromosome_name": chromosome_name})
+        return contents
     except UnboundLocalError:
-        contents = read_html_file("error.html") \
-            .render(context={})
-        jeyson = {}
-        return contents, jeyson
+        if "json" in arguments.keys() and arguments["json"] == ['1']:
+            contents = {}
+        else:
+            contents = read_html_file("error.html") \
+                .render(context={})
+        return contents
     except KeyError:
-        contents = read_html_file("error.html") \
-            .render(context={})
-        jeyson = {}
-        return contents, jeyson
+        if "json" in arguments.keys() and arguments["json"] == ['1']:
+            contents = {}
+        else:
+            contents = read_html_file("error.html") \
+                .render(context={})
+        return contents
 
 def gene_calc(arguments):
     try:
@@ -204,30 +249,36 @@ def gene_calc(arguments):
                 base_c = calculations[2]
                 base_g = calculations[3]
                 base_t = calculations[4]
-                contents = read_html_file("gene_calc.html") \
+                if "json" in arguments.keys() and arguments["json"] == ['1']:
+                    contents = {"gene": gene_name,
+                            "length": length,
+                            "base_a": base_a,
+                            "base_c": base_c,
+                            "base_g": base_g,
+                            "base_t": base_t}
+                else:
+                    contents = read_html_file("gene_calc.html") \
                     .render(context={"gene": gene_name,
                                      "length": length,
                                      "base_a": base_a,
                                      "base_c": base_c,
                                      "base_g": base_g,
                                      "base_t": base_t})
-                jeyson = {"gene": gene_name,
-                            "length": length,
-                            "base_a": base_a,
-                            "base_c": base_c,
-                            "base_g": base_g,
-                            "base_t": base_t}
-        return contents, jeyson
+                return contents
     except UnboundLocalError:
-        contents = read_html_file("error.html") \
-            .render(context={})
-        jeyson = {}
-        return contents, jeyson
+        if "json" in arguments.keys() and arguments["json"] == ['1']:
+            contents = {}
+        else:
+            contents = read_html_file("error.html") \
+                .render(context={})
+        return contents
     except KeyError:
-        contents = read_html_file("error.html") \
-            .render(context={})
-        jeyson = {}
-        return contents, jeyson
+        if "json" in arguments.keys() and arguments["json"] == ['1']:
+            contents = {}
+        else:
+            contents = read_html_file("error.html") \
+                .render(context={})
+        return contents
 
 def gene_list(arguments):
     try:
@@ -245,26 +296,33 @@ def gene_list(arguments):
                     genes_list.append(dict["attributes"]["associated_gene"])
             except KeyError:
                 pass
-        contents = read_html_file("gene_list.html") \
-            .render(context={"genes_list": genes_list,
-                        "chromo": chromo,
-                        "start": start,
-                        "end": end})
-        jeyson = {"genes_list": genes_list,
+        if "json" in arguments.keys() and arguments["json"] == ['1']:
+            contents = {"genes_list": genes_list,
                         "chromo": chromo,
                         "start": start,
                         "end": end}
-        return contents, jeyson
+        else:
+            contents = read_html_file("gene_list.html") \
+                .render(context={"genes_list": genes_list,
+                        "chromo": chromo,
+                        "start": start,
+                        "end": end})
+
+        return contents
     except AttributeError:
-        contents = read_html_file("error.html") \
-            .render(context={})
-        jeyson = {}
-        return contents, jeyson
+        if "json" in arguments.keys() and arguments["json"] == ['1']:
+            contents = {}
+        else:
+            contents = read_html_file("error.html") \
+                .render(context={})
+        return contents
     except KeyError:
-        contents = read_html_file("error.html") \
-            .render(context={})
-        jeyson = {}
-        return contents, jeyson
+        if "json" in arguments.keys() and arguments["json"] == ['1']:
+            contents = {}
+        else:
+            contents = read_html_file("error.html") \
+                .render(context={})
+        return contents
 
 
 
